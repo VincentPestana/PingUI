@@ -50,14 +50,22 @@ namespace PingUI
 				// Create a buffer of 32 bytes of data to be transmitted.
 				string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 				byte[] buffer = Encoding.ASCII.GetBytes(data);
-				int timeout = 120;
-				PingReply reply = pingSender.Send(line, timeout, buffer, options);
-				if (reply.Status != IPStatus.Success)
+				int timeout = 1000;
+				PingReply reply = null;
+				try
+				{
+					reply = pingSender.Send(line, timeout, buffer, options);
+				}
+				catch (Exception)
+				{
+
+				}
+				if (reply == null || reply.Status != IPStatus.Success)
 				{
 					// Ping didnt happen
 					sbOutput.Append($"{line} : Failed|");
 				}
-				else
+				else if (reply != null)
 				{
 					// Ping happened
 					sbOutput.Append($"{line} : {reply.RoundtripTime}|");
